@@ -22,7 +22,7 @@
 
         h2 {
             color: #90120D;
-            font-size: 1.2em; /* Ridimensionato per schermi più piccoli */
+            font-size: 1.2em;
         }
 
         label, input, select, button {
@@ -31,7 +31,7 @@
             margin: 10px auto;
             padding: 8px;
             border-radius: 5px;
-            font-size: 1em; /* Adattato per la leggibilità su schermi piccoli */
+            font-size: 1em;
         }
 
         input, select {
@@ -50,12 +50,12 @@
             background-color: #d38100;
         }
 
-        #risultati {
+        #risultati, #faseDesc {
             text-align: left;
             border-top: 1px solid #ddd;
             margin-top: 20px;
             padding-top: 10px;
-            font-size: 0.9em; /* Ridimensionato per schermi più piccoli */
+            font-size: 0.9em;
         }
 
         img.logo, img.nutrient {
@@ -84,23 +84,14 @@
         <h2>Second Life Calcolatore</h2>
         <label for="altezza">Altezza (in cm):</label>
         <input type="number" id="altezza" name="altezza">
-
         <label for="fase">Fase:</label>
-        <select id="fase" name="fase">
+        <select id="fase" name="fase" onchange="resetRisultati()">
             <option value="1">Mantenimento</option>
             <option value="2">Ricomposizione Corporea</option>
             <option value="3">Dimagrimento</option>
         </select>
-
         <button onclick="eseguiCalcolo()">Calcola</button>
-
-        <div class="nutrients">
-            <img src="https://static.wixstatic.com/media/a317be_d3c7a9a880444a658d8e243d16f376f5~mv2.png" alt="Voglie" class="nutrient">
-            <img src="https://static.wixstatic.com/media/a317be_5da395bfc0e44484b218497efe8f2598~mv2.png" alt="Proteine" class="nutrient">
-            <img src="https://static.wixstatic.com/media/a317be_0d104eb585764263a66528aa72a27f07~mv2.png" alt="Grassi" class="nutrient">
-            <img src="https://static.wixstatic.com/media/a317be_c17754251f3c4d079cf704e5e5f2ec56~mv2.png" alt="Carboidrati" class="nutrient">
-        </div>
-
+        <div id="faseDesc"></div>
         <div id="risultati"></div>
     </div>
 
@@ -108,28 +99,27 @@
         function calcolaPorzioni(altezzaCm, fase) {
             var Q = altezzaCm - 100;
             var grassiQ = Math.round(Q / 5.5);
-
             var pasti = {
-                1: { // Mantenimento
+                1: {
                     'SNACK - almeno 2': { 'Grassi': [2 * grassiQ, 3 * grassiQ], 'Proteine': [0.5 * Q, 1 * Q], 'Carboidrati': 0.5 * Q },
                     'BREAK - almeno 1': { 'Proteine': 2 * Q, 'Carboidrati': 1 * Q, 'Grassi': [1 * grassiQ, 2 * grassiQ] },
                     'RELAX - almeno 1': { 'Proteine': [3 * Q, 4 * Q], 'Carboidrati': [1 * Q, 2 * Q], 'Grassi': [3 * grassiQ, 4 * grassiQ] }
                 },
-                2: { // Ricomposizione Corporea
+                2: {
                     'SNACK': { 'Grassi': [2 * grassiQ, 3 * grassiQ], 'Proteine': [0.5 * Q, 1 * Q], 'Carboidrati': [0.5 * Q, 1 * Q] },
                     'BREAK': { 'Proteine': 2 * Q, 'Carboidrati': [1 * Q, 1.5 * Q], 'Grassi': 2 * grassiQ },
                     'RELAX': { 'Proteine': [3 * Q, 4 * Q], 'Carboidrati': 2 * Q, 'Grassi': 3 * grassiQ }
                 },
-                3: { // Dimagrimento
+                3: {
                     'SNACK': { 'Grassi': 3 * grassiQ, 'Proteine': 1 * Q, 'Carboidrati': [0, 0.5 * Q] },
                     'BREAK': { 'Proteine': [2 * Q, 3 * Q], 'Carboidrati': [0.5 * Q, 1 * Q], 'Grassi': 2 * grassiQ },
                     'RELAX': { 'Proteine': [4 * Q, 5 * Q], 'Carboidrati': 1 * Q, 'Grassi': 4 * grassiQ }
                 }
             };
 
-            var risultati = "Composizione dei pasti per la fase di " + ["Mantenimento", "Ricomposizione Corporea", "Dimagrimento"][fase - 1] + ":<br>";
+            var risultati = descrizioneFase(fase) + "<br><br>Composizione dei pasti:<br>";
             for (var pasto in pasti[fase]) {
-                risultati += "<br><strong>" + pasto + ":</strong><br>";
+                risultati += "<br><strong>" + pasto + ":</strong> " + descrizionePasto(pasto) + "<br>";
                 for (var macronutriente in pasti[fase][pasto]) {
                     var quantita = pasti[fase][pasto][macronutriente];
                     if (Array.isArray(quantita)) {
@@ -139,27 +129,49 @@
                     }
                 }
             }
-
             return risultati;
+        }
+
+        function descrizioneFase(fase) {
+            var descrizioni = {
+                1: "Mantenimento: Stabilizza peso e composizione corporea, bilanciando i macronutrienti.",
+                2: "Ricomposizione Corporea: Modifica proporzioni di massa grassa e massa magra.",
+                3: "Dimagrimento: Riduce grasso corporeo e migliora flessibilità metabolica."
+            };
+            return descrizioni[fase];
+        }
+
+        function descrizionePasto(pasto) {
+            var descrizioni = {
+                'SNACK - almeno 2': "Snack: Forniscono energia tra i pasti principali, mantenendo attivo il metabolismo.",
+                'RELAX - almeno 1': "Relax: Pasti più abbondanti per concludere la giornata, ideali per il recupero muscolare.",
+                'BREAK - almeno 1': "Break: Pasti equilibrati per nutrire il corpo senza appesantire."
+            };
+            return descrizioni[pasto] || "";
         }
 
         function eseguiCalcolo() {
             var altezzaCm = document.getElementById("altezza").value;
             var faseScelta = document.getElementById("fase").value;
             var risultatiDiv = document.getElementById("risultati");
+            var descrizioneFaseDiv = document.getElementById("faseDesc");
 
             if (altezzaCm && faseScelta) {
                 var risultati = calcolaPorzioni(parseInt(altezzaCm), parseInt(faseScelta));
                 risultatiDiv.innerHTML = risultati;
+                descrizioneFaseDiv.innerHTML = descrizioneFase(parseInt(faseScelta));
                 risultatiDiv.classList.add("visible");
             } else {
                 risultatiDiv.innerHTML = "Per favore, inserisci tutti i dati richiesti.";
+                descrizioneFaseDiv.innerHTML = "";
                 risultatiDiv.classList.remove("visible");
             }
+        }
+
+        function resetRisultati() {
+            document.getElementById("risultati").innerHTML = "";
+            document.getElementById("faseDesc").innerHTML = "";
         }
     </script>
 </body>
 </html>
-
-
-
