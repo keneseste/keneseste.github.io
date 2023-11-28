@@ -143,14 +143,15 @@
 
         function descrizionePasto(pasto) {
             var descrizioni = {
-                'SNACK - almeno 2': 'Forniscono energia tra i pasti principali, mantenendo attivo il metabolismo.',
-                'RELAX - almeno 1': "Relax: Pasti più abbondanti per concludere la giornata, ideali per il recupero muscolare.",
-                'BREAK - almeno 1': "Break: Pasti equilibrati per nutrire il corpo senza appesantire."
                 'SNACK': 'Forniscono energia tra i pasti principali, mantenendo attivo il metabolismo.',
                 'RELAX': "Relax: Pasti più abbondanti per concludere la giornata, ideali per il recupero muscolare.",
                 'BREAK': "Break: Pasti equilibrati per nutrire il corpo senza appesantire."
             };
-            return descrizioni[pasto] || "";
+            // Estrai la chiave generale (es. 'SNACK', 'BREAK', 'RELAX') dal nome del pasto
+            var chiaveGenerale = pasto.split(' -')[0]; // Separa al primo ' -' e prendi la prima parte
+            return descrizioniGenerali[chiaveGenerale] || "";
+
+          //  return descrizioni[pasto] || "";
         }
 
         function eseguiCalcolo() {
