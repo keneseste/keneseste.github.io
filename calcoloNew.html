@@ -3,6 +3,184 @@
 <head>
     <title>Second Life Calcolatore</title>
     <style>
+        @media screen and (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 10px;
+            }
+
+            .nutrients img {
+                max-width: 50px; /* Ridimensiona ulteriormente le immagini su schermi piccoli */
+            }
+
+            .nutrients {
+                flex-wrap: wrap; /* Consente alle immagini di andare a capo */
+            }
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h2 {
+            color: #90120D;
+        }
+
+        label, input, select, button {
+            display: block;
+            width: 90%;
+            margin: 10px auto;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        input, select {
+            border: 1px solid #ddd;
+        }
+
+        button {
+            background-color: #F39200;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #d38100;
+        }
+
+        #risultati {
+            text-align: left;
+            border-top: 1px solid #ddd;
+            margin-top: 20px;
+            padding-top: 10px;
+        }
+
+        img.logo, img.nutrient {
+            max-width: 100px;
+            width: 100%;
+            height: auto;
+            margin: 0 auto;
+        }
+
+        .nutrients {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nutrients img {
+            margin: 0 10px;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="container">
+        <img src="https://static.wixstatic.com/media/a317be_596f543ad1f74387a1c300543172156e~mv2.png" alt="Logo Second Life" class="logo">
+        <h2>Second Life Calcolatore</h2>
+        <label for="altezza">Altezza (in cm):</label>
+        <input type="number" id="altezza" name="altezza">
+
+        <label for="fase">Fase:</label>
+        <select id="fase" name="fase">
+            <option value="1">Mantenimento</option>
+            <option value="2">Ricomposizione Corporea</option>
+            <option value="3">Dimagrimento</option>
+        </select>
+
+        <button onclick="eseguiCalcolo()">Calcola</button>
+
+        <div class="nutrients">
+            <img src="https://static.wixstatic.com/media/a317be_d3c7a9a880444a658d8e243d16f376f5~mv2.png" alt="Voglie" class="nutrient">
+            <img src="https://static.wixstatic.com/media/a317be_5da395bfc0e44484b218497efe8f2598~mv2.png" alt="Proteine" class="nutrient">
+            <img src="https://static.wixstatic.com/media/a317be_0d104eb585764263a66528aa72a27f07~mv2.png" alt="Grassi" class="nutrient">
+            <img src="https://static.wixstatic.com/media/a317be_c17754251f3c4d079cf704e5e5f2ec56~mv2.png" alt="Carboidrati" class="nutrient">
+        </div>
+
+        <div id="risultati"></div>
+    </div>
+
+     <script>
+    function calcolaPorzioni(altezzaCm, fase) {
+        var Q = altezzaCm - 100;
+        var grassiQ = Math.round(Q / 5.5);
+
+        var pasti = {
+            1: { // Mantenimento
+                'SNACK - almeno 2': { 'Grassi': [2 * grassiQ, 3 * grassiQ], 'Proteine': [0.5 * Q, 1 * Q], 'Carboidrati': 0.5 * Q },
+                'BREAK - almeno 1': { 'Proteine': 2 * Q, 'Carboidrati': 1 * Q, 'Grassi': [1 * grassiQ, 2 * grassiQ] },
+                'RELAX - almeno 1': { 'Proteine': [3 * Q, 4 * Q], 'Carboidrati': [1 * Q, 2 * Q], 'Grassi': [3 * grassiQ, 4 * grassiQ] }
+            },
+            2: { // Ricomposizione Corporea
+                'SNACK': { 'Grassi': [2 * grassiQ, 3 * grassiQ], 'Proteine': [0.5 * Q, 1 * Q], 'Carboidrati': [0.5 * Q, 1 * Q] },
+                'BREAK': { 'Proteine': 2 * Q, 'Carboidrati': [1 * Q, 1.5 * Q], 'Grassi': 2 * grassiQ },
+                'RELAX': { 'Proteine': [3 * Q, 4 * Q], 'Carboidrati': 2 * Q, 'Grassi': 3 * grassiQ }
+            },
+            3: { // Dimagrimento
+                'SNACK': { 'Grassi': 3 * grassiQ, 'Proteine': 1 * Q, 'Carboidrati': [0, 0.5 * Q] },
+                'BREAK': { 'Proteine': [2 * Q, 3 * Q], 'Carboidrati': [0.5 * Q, 1 * Q], 'Grassi': 2 * grassiQ },
+                'RELAX': { 'Proteine': [4 * Q, 5 * Q], 'Carboidrati': 1 * Q, 'Grassi': 4 * grassiQ }
+            }
+        };
+
+        var risultati = "Composizione dei pasti per la fase di " + ["Mantenimento", "Ricomposizione Corporea", "Dimagrimento"][fase - 1] + ":<br>";
+        for (var pasto in pasti[fase]) {
+            risultati += "<br><strong>" + pasto + ":</strong><br>";
+            for (var macronutriente in pasti[fase][pasto]) {
+                var quantita = pasti[fase][pasto][macronutriente];
+                if (Array.isArray(quantita)) {
+                    risultati += macronutriente + ": da " + quantita[0] + " a " + quantita[1] + " g<br>";
+                } else {
+                    risultati += macronutriente + ": " + quantita + " g<br>";
+                }
+            }
+        }
+
+        return risultati;
+    }
+
+    function eseguiCalcolo() {
+    var altezzaCm = document.getElementById("altezza").value;
+    var faseScelta = document.getElementById("fase").value;
+    var risultatiDiv = document.getElementById("risultati");
+
+    if (altezzaCm && faseScelta) {
+        var risultati = calcolaPorzioni(parseInt(altezzaCm), parseInt(faseScelta));
+        risultatiDiv.innerHTML = risultati;
+        risultatiDiv.classList.add("visible");
+    } else {
+        risultatiDiv.innerHTML = "Per favore, inserisci tutti i dati richiesti.";
+        risultatiDiv.classList.remove("visible");
+    }
+}
+
+</script>
+</body>
+</html>
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Second Life Calcolatore</title>
+    <style>
         @media screen and (max-width: 1600px) {
             .container {
                 width: 100%;
