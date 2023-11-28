@@ -3,39 +3,26 @@
 <head>
     <title>Second Life Calcolatore</title>
     <style>
-        @media screen and (max-width: 600px) {
-            .container {
-                width: 100%;
-                padding: 10px;
-            }
-
-            .nutrients img {
-                max-width: 50px; /* Ridimensiona ulteriormente le immagini su schermi piccoli */
-            }
-
-            .nutrients {
-                flex-wrap: wrap; /* Consente alle immagini di andare a capo */
-            }
-        }
-        
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
             text-align: center;
-            padding: 20px;
         }
 
         .container {
-            max-width: 600px;
-            margin: auto;
+            max-width: 100%;
+            margin: 0 auto;
             background-color: #fff;
-            padding: 20px;
+            padding: 15px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
         }
 
         h2 {
             color: #90120D;
+            font-size: 1.2em; /* Ridimensionato per schermi più piccoli */
         }
 
         label, input, select, button {
@@ -44,6 +31,7 @@
             margin: 10px auto;
             padding: 8px;
             border-radius: 5px;
+            font-size: 1em; /* Adattato per la leggibilità su schermi piccoli */
         }
 
         input, select {
@@ -55,7 +43,7 @@
             color: white;
             border: none;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 1em;
         }
 
         button:hover {
@@ -67,24 +55,25 @@
             border-top: 1px solid #ddd;
             margin-top: 20px;
             padding-top: 10px;
+            font-size: 0.9em; /* Ridimensionato per schermi più piccoli */
         }
 
         img.logo, img.nutrient {
-            max-width: 100px;
+            max-width: 80px;
             width: 100%;
             height: auto;
-            margin: 0 auto;
+            margin: 10px auto;
         }
 
         .nutrients {
             display: flex;
             justify-content: center;
-            margin-top: 20px;
             flex-wrap: wrap;
+            margin-top: 20px;
         }
 
         .nutrients img {
-            margin: 0 10px;
+            margin: 5px;
         }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -115,62 +104,62 @@
         <div id="risultati"></div>
     </div>
 
-     <script>
-    function calcolaPorzioni(altezzaCm, fase) {
-        var Q = altezzaCm - 100;
-        var grassiQ = Math.round(Q / 5.5);
+    <script>
+        function calcolaPorzioni(altezzaCm, fase) {
+            var Q = altezzaCm - 100;
+            var grassiQ = Math.round(Q / 5.5);
 
-        var pasti = {
-            1: { // Mantenimento
-                'SNACK - almeno 2': { 'Grassi': [2 * grassiQ, 3 * grassiQ], 'Proteine': [0.5 * Q, 1 * Q], 'Carboidrati': 0.5 * Q },
-                'BREAK - almeno 1': { 'Proteine': 2 * Q, 'Carboidrati': 1 * Q, 'Grassi': [1 * grassiQ, 2 * grassiQ] },
-                'RELAX - almeno 1': { 'Proteine': [3 * Q, 4 * Q], 'Carboidrati': [1 * Q, 2 * Q], 'Grassi': [3 * grassiQ, 4 * grassiQ] }
-            },
-            2: { // Ricomposizione Corporea
-                'SNACK': { 'Grassi': [2 * grassiQ, 3 * grassiQ], 'Proteine': [0.5 * Q, 1 * Q], 'Carboidrati': [0.5 * Q, 1 * Q] },
-                'BREAK': { 'Proteine': 2 * Q, 'Carboidrati': [1 * Q, 1.5 * Q], 'Grassi': 2 * grassiQ },
-                'RELAX': { 'Proteine': [3 * Q, 4 * Q], 'Carboidrati': 2 * Q, 'Grassi': 3 * grassiQ }
-            },
-            3: { // Dimagrimento
-                'SNACK': { 'Grassi': 3 * grassiQ, 'Proteine': 1 * Q, 'Carboidrati': [0, 0.5 * Q] },
-                'BREAK': { 'Proteine': [2 * Q, 3 * Q], 'Carboidrati': [0.5 * Q, 1 * Q], 'Grassi': 2 * grassiQ },
-                'RELAX': { 'Proteine': [4 * Q, 5 * Q], 'Carboidrati': 1 * Q, 'Grassi': 4 * grassiQ }
-            }
-        };
+            var pasti = {
+                1: { // Mantenimento
+                    'SNACK - almeno 2': { 'Grassi': [2 * grassiQ, 3 * grassiQ], 'Proteine': [0.5 * Q, 1 * Q], 'Carboidrati': 0.5 * Q },
+                    'BREAK - almeno 1': { 'Proteine': 2 * Q, 'Carboidrati': 1 * Q, 'Grassi': [1 * grassiQ, 2 * grassiQ] },
+                    'RELAX - almeno 1': { 'Proteine': [3 * Q, 4 * Q], 'Carboidrati': [1 * Q, 2 * Q], 'Grassi': [3 * grassiQ, 4 * grassiQ] }
+                },
+                2: { // Ricomposizione Corporea
+                    'SNACK': { 'Grassi': [2 * grassiQ, 3 * grassiQ], 'Proteine': [0.5 * Q, 1 * Q], 'Carboidrati': [0.5 * Q, 1 * Q] },
+                    'BREAK': { 'Proteine': 2 * Q, 'Carboidrati': [1 * Q, 1.5 * Q], 'Grassi': 2 * grassiQ },
+                    'RELAX': { 'Proteine': [3 * Q, 4 * Q], 'Carboidrati': 2 * Q, 'Grassi': 3 * grassiQ }
+                },
+                3: { // Dimagrimento
+                    'SNACK': { 'Grassi': 3 * grassiQ, 'Proteine': 1 * Q, 'Carboidrati': [0, 0.5 * Q] },
+                    'BREAK': { 'Proteine': [2 * Q, 3 * Q], 'Carboidrati': [0.5 * Q, 1 * Q], 'Grassi': 2 * grassiQ },
+                    'RELAX': { 'Proteine': [4 * Q, 5 * Q], 'Carboidrati': 1 * Q, 'Grassi': 4 * grassiQ }
+                }
+            };
 
-        var risultati = "Composizione dei pasti per la fase di " + ["Mantenimento", "Ricomposizione Corporea", "Dimagrimento"][fase - 1] + ":<br>";
-        for (var pasto in pasti[fase]) {
-            risultati += "<br><strong>" + pasto + ":</strong><br>";
-            for (var macronutriente in pasti[fase][pasto]) {
-                var quantita = pasti[fase][pasto][macronutriente];
-                if (Array.isArray(quantita)) {
-                    risultati += macronutriente + ": da " + quantita[0] + " a " + quantita[1] + " g<br>";
-                } else {
-                    risultati += macronutriente + ": " + quantita + " g<br>";
+            var risultati = "Composizione dei pasti per la fase di " + ["Mantenimento", "Ricomposizione Corporea", "Dimagrimento"][fase - 1] + ":<br>";
+            for (var pasto in pasti[fase]) {
+                risultati += "<br><strong>" + pasto + ":</strong><br>";
+                for (var macronutriente in pasti[fase][pasto]) {
+                    var quantita = pasti[fase][pasto][macronutriente];
+                    if (Array.isArray(quantita)) {
+                        risultati += macronutriente + ": da " + quantita[0] + " a " + quantita[1] + " g<br>";
+                    } else {
+                        risultati += macronutriente + ": " + quantita + " g<br>";
+                    }
                 }
             }
+
+            return risultati;
         }
 
-        return risultati;
-    }
+        function eseguiCalcolo() {
+            var altezzaCm = document.getElementById("altezza").value;
+            var faseScelta = document.getElementById("fase").value;
+            var risultatiDiv = document.getElementById("risultati");
 
-    function eseguiCalcolo() {
-    var altezzaCm = document.getElementById("altezza").value;
-    var faseScelta = document.getElementById("fase").value;
-    var risultatiDiv = document.getElementById("risultati");
-
-    if (altezzaCm && faseScelta) {
-        var risultati = calcolaPorzioni(parseInt(altezzaCm), parseInt(faseScelta));
-        risultatiDiv.innerHTML = risultati;
-        risultatiDiv.classList.add("visible");
-    } else {
-        risultatiDiv.innerHTML = "Per favore, inserisci tutti i dati richiesti.";
-        risultatiDiv.classList.remove("visible");
-    }
-}
-
-</script>
+            if (altezzaCm && faseScelta) {
+                var risultati = calcolaPorzioni(parseInt(altezzaCm), parseInt(faseScelta));
+                risultatiDiv.innerHTML = risultati;
+                risultatiDiv.classList.add("visible");
+            } else {
+                risultatiDiv.innerHTML = "Per favore, inserisci tutti i dati richiesti.";
+                risultatiDiv.classList.remove("visible");
+            }
+        }
+    </script>
 </body>
 </html>
+
 
 
