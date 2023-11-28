@@ -119,7 +119,8 @@
 
             var risultati = descrizioneFase(fase) + "<br><br>Composizione dei pasti:<br>";
             for (var pasto in pasti[fase]) {
-                risultati += "<br><strong>" + pasto + ":" + descrizionePasto(pasto) "</strong> "+ "<br>";
+              //  risultati += "<br><strong>" + pasto + ":" + descrizionePasto(pasto) "</strong> "+ "<br>";
+                risultati += "<br><strong>" + pasto + ": " + descrizionePasto(pasto) + "</strong><br>";
 
                 // risultati += "<br><strong>" + pasto + ":</strong> " + descrizionePasto(pasto) + "<br>";
                 for (var macronutriente in pasti[fase][pasto]) {
